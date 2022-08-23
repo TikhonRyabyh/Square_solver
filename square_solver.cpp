@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <cassert>
 #include <math.h>
 
 #define EPSILON 1e-3
+#define INFINITY_ROOTS -1
 
 void greeting ( void ) {
 	printf( "This program solves quadratic equations. Equation should be like this: ax^2 + bx + c = 0.\n" );
@@ -26,10 +28,20 @@ int cmp_for_double ( double x, double y ) {
 }
 
 void equation_solver ( const double a, const double b, const double c, double* x1, double* x2, int *n ) {
+	
+	assert( std :: isfinite( a ) );
+	assert( std :: isfinite( b ) );
+	assert( std :: isfinite( c ) );
+
+	assert( x1 != NULL );
+	assert( x2 != NULL );
+	assert( n != NULL );
+	assert( x1 != x2 );
+
 	if( cmp_for_double( a, 0 ) ) {
 		if( cmp_for_double( b, 0 ) ) {
 			if( cmp_for_double( c, 0 ) ) {
-				( *n ) = -1;
+				( *n ) = INFINITY_ROOTS;
 				return;
 			}
 			( *n ) = 0;
@@ -69,7 +81,7 @@ void output ( const double x1, const double x2, const int n ) {
 		printf( "Result: no roots.\n" );
 		return;
 	}
-	if( n == -1 ) {
+	if( n == INFINITY_ROOTS ) {
 		printf( "Result: infinity roots.\n" );
 		return;
 	}
@@ -86,14 +98,14 @@ void output ( const double x1, const double x2, const int n ) {
 int main ( void ) {
 	greeting();
 
-	int errors = 0; // 0 - no errors or correct data, 1 - incorrect data or there are some errors
+	int errors = 0;
 	double a = 0, b = 0, c = 0;
 
 	errors = input( &a, &b, &c );
 	if( errors )
 		return 1;
 
-	int n = 0; // -1 - infinity roots, 0 - no roots, 1 - one root etc.
+	int n = 0;
 	double x1 = 0, x2 = 0;
 
 	equation_solver( a, b, c, &x1, &x2, &n );
